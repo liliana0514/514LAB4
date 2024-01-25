@@ -3,9 +3,9 @@
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
-#include <cfloat> // 用于 FLT_MAX
+#include <cfloat> // for FLT_MAX
 
-// 定义 BLE 服务和特征的 UUID
+// Define the UUIDs for BLE service and characteristic
 static BLEUUID serviceUUID("db0e37aa-c7ff-4584-936d-e39622848d33");
 static BLEUUID charUUID("0fd8fa9f-34da-40bb-8cb7-afc7d0174389");
 
@@ -15,11 +15,11 @@ static boolean doScan = false;
 static BLERemoteCharacteristic* pRemoteCharacteristic;
 static BLEAdvertisedDevice* myDevice;
 
-// 用于跟踪数据的全局变量
-float maxDistance = -FLT_MAX;  // 初始化为非常低的值
-float minDistance = FLT_MAX;   // 初始化为非常高的值
+// Global variables for tracking data
+float maxDistance = -FLT_MAX;  // Initialize to a very low value
+float minDistance = FLT_MAX;   // Initialize to a very high value
 
-// 接收数据的回调
+// Callback for receiving data
 static void notifyCallback(
     BLERemoteCharacteristic* pBLERemoteCharacteristic,
     uint8_t* pData,
@@ -31,21 +31,21 @@ static void notifyCallback(
     Serial.print(", data length: ");
     Serial.println(length);
 
-    // 将接收到的数据转换为字符串
+    // Convert the received data to a string
     String dataStr = "";
     for (int i = 0; i < length; i++) {
         dataStr += (char)pData[i];
     }
 
-    // 提取距离值
-    int startIndex = dataStr.indexOf(' ') + 1; // 找到第一个空格后的位置
-    int endIndex = dataStr.indexOf(' ', startIndex); // 找到第二个空格的位置
+    // Extract the distance value
+    int startIndex = dataStr.indexOf(' ') + 1; // Find the position after the first space
+    int endIndex = dataStr.indexOf(' ', startIndex); // Find the position of the second space
     String distanceStr = dataStr.substring(startIndex, endIndex);
 
-    // 将提取的字符串转换为浮点数
+    // Convert the extracted string to a floating-point number
     float receivedDistance = distanceStr.toFloat();
 
-    // 更新最大和最小距离
+    // Update the maximum and minimum distances
     if (receivedDistance > maxDistance) {
         maxDistance = receivedDistance;
     }
@@ -53,7 +53,7 @@ static void notifyCallback(
         minDistance = receivedDistance;
     }
 
-    // 打印当前距离，最大和最小距离
+    // Print the current distance, maximum and minimum distances
     Serial.print("Current Distance: ");
     Serial.println(receivedDistance);
     Serial.print("Max Distance: ");
@@ -61,8 +61,6 @@ static void notifyCallback(
     Serial.print("Min Distance: ");
     Serial.println(minDistance);
 }
-
-
 
 class MyClientCallback : public BLEClientCallbacks {
     void onConnect(BLEClient* pclient) {
@@ -154,7 +152,7 @@ void loop() {
         doConnect = false;
     }
 
-    // 其他任务...
+    // Other tasks...
 
-    delay(1000); // 延迟一秒
+    delay(1000); // Delay for one second
 }
